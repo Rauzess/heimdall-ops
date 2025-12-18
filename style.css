@@ -5,55 +5,51 @@
   padding: 0;
 }
 
-/* VARIÁVEIS DO TEMA HEIMDALL (BIFROST EYES VERSION) */
+/* VARIÁVEIS DO TEMA HEIMDALL */
 :root {
   --bg-dark: #050505;
   --glass-panel: rgba(18, 18, 20, 0.85);
   --gold-accent: #c5a059;
-  /* Ouro da armadura dele */
-
-  /* NOVAS CORES: O Roxo/Violeta dos olhos do Heimdall GoW */
+  /* Ouro */
   --heimdall-eye-purple: #a147ff;
+  /* Roxo do Olho */
   --heimdall-eye-glow: rgba(161, 71, 255, 0.6);
-  /* Um gradiente para botões especiais que mistura o roxo com o ciano do Bifrost */
   --bifrost-gradient: linear-gradient(135deg, #a147ff, #00c3ff);
-
   --text-main: #e0e0e0;
   --text-muted: #a0a0a0;
   --border-subtle: 1px solid rgba(197, 160, 89, 0.3);
 }
 
-/* FONTES IMPORTADAS NO HTML (Inter + Cinzel) */
-
+/* FONTES */
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 
-  /* BACKGROUND COM A IMAGEM ESCOLHIDA */
+  /* BACKGROUND ÉPICO */
   background:
     linear-gradient(rgba(10, 15, 25, 0.85), rgba(5, 10, 20, 0.95)),
     url('https://t4.ftcdn.net/jpg/16/64/82/77/360_F_1664827776_MEKNJB76xqUqlAJkeG2QE546yJ5TIJ7O.jpg');
-
   background-size: cover;
   background-position: center 30%;
   background-attachment: fixed;
 }
 
-/* TIPOGRAFIA ÉPICA */
 h1,
 h2,
 h3,
 .btn-pdf,
 .badge,
-label {
+label,
+.auth-title,
+.sector-label {
   font-family: 'Cinzel', serif;
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
-/* --- FIX DOS ÍCONES DE RELÓGIO/CALENDÁRIO (AGORA COM BRILHO ROXO) --- */
+/* ÍCONES DE INPUT (DATE/TIME) BRANCOS */
 input[type="time"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
@@ -65,24 +61,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="time"]::-webkit-calendar-picker-indicator:hover,
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
-  /* Brilho Roxo ao passar o mouse */
   filter: invert(1) drop-shadow(0 0 5px var(--heimdall-eye-purple));
 }
 
-/* --- TELA DE LOGIN (REMASTERIZADA) --- */
+/* =========================================
+   TELA DE LOGIN E CADASTRO
+   ========================================= */
 #login-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Fundo escuro com vinheta forte */
   background: radial-gradient(circle at center, rgba(20, 10, 30, 0.4) 0%, #000 100%),
     url('https://t4.ftcdn.net/jpg/16/64/82/77/360_F_1664827776_MEKNJB76xqUqlAJkeG2QE546yJ5TIJ7O.jpg');
   background-size: cover;
   background-position: center;
   backdrop-filter: blur(10px);
-  /* Blur mais forte no fundo */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -91,26 +86,18 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .login-card {
-  /* Efeito de Vidro Negro / Pedra Polida */
   background: rgba(5, 5, 8, 0.85);
-  padding: 4rem 3rem;
+  padding: 3rem 2.5rem;
   border-radius: 4px;
-
-  /* Borda dupla: uma fina dourada e uma sombra roxa */
   border: 1px solid rgba(197, 160, 89, 0.4);
-  box-shadow:
-    0 0 60px rgba(0, 0, 0, 0.9),
-    inset 0 0 40px rgba(0, 0, 0, 0.8);
-
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 0, 0, 0.8);
   text-align: center;
   max-width: 420px;
   width: 90%;
   position: relative;
   overflow: hidden;
-  /* Para brilhos internos */
 }
 
-/* Linha dourada decorativa no topo */
 .login-card::before {
   content: "";
   position: absolute;
@@ -123,7 +110,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 0 10px var(--gold-accent);
 }
 
-/* --- OLHO RÚNICO (SVG) --- */
+/* OLHO RÚNICO */
 .rune-eye-container {
   position: relative;
   width: 80px;
@@ -138,13 +125,11 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   width: 100%;
   height: 100%;
   color: var(--gold-accent);
-  /* Olho Dourado */
   filter: drop-shadow(0 0 5px var(--gold-accent));
   animation: floatEye 4s ease-in-out infinite;
   z-index: 2;
 }
 
-/* Brilho roxo atrás do olho (Aura do Heimdall) */
 .eye-glow {
   position: absolute;
   top: 50%;
@@ -159,11 +144,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   z-index: 1;
 }
 
-/* --- TEXTOS --- */
 .login-card h1 {
   font-family: 'Cinzel', serif;
   color: #fff;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   margin-bottom: 0.5rem;
   letter-spacing: 2px;
   text-shadow: 0 5px 10px rgba(0, 0, 0, 1);
@@ -182,152 +166,108 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.5;
 }
 
-.login-card p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  letter-spacing: 1.5px;
-  margin-bottom: 2.5rem;
-  text-transform: uppercase;
-}
-
-/* --- BOTÃO ESTILO GOW --- */
-.btn-google {
-  background: linear-gradient(180deg, rgba(30, 30, 30, 0.8) 0%, rgba(10, 10, 10, 1) 100%);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 16px 30px;
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  font-size: 1rem;
+/* FORMS DE LOGIN/CADASTRO */
+.auth-form {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 15px;
+  animation: fadeIn 0.4s ease;
 }
 
-/* Efeito de Hover Épico (Borda Dourada e Fundo Roxo) */
-.btn-google:hover {
-  border-color: var(--gold-accent);
-  background: linear-gradient(180deg, rgba(40, 40, 40, 0.9) 0%, rgba(20, 20, 20, 1) 100%);
-  box-shadow:
-    0 0 20px rgba(212, 175, 55, 0.2),
-    /* Glow Dourado */
-    inset 0 0 20px rgba(161, 71, 255, 0.1);
-  /* Glow Roxo Interno */
-  transform: translateY(-2px);
+.auth-title {
   color: var(--gold-accent);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
 }
 
-.btn-google:active {
-  transform: translateY(0);
-}
-
-.icon-google {
+.auth-form input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #444;
   color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
   transition: 0.3s;
 }
 
-.btn-google:hover .icon-google {
-  color: var(--gold-accent);
-  filter: drop-shadow(0 0 5px var(--gold-accent));
+.auth-form input:focus {
+  border-color: var(--heimdall-eye-purple);
+  box-shadow: 0 0 10px rgba(161, 71, 255, 0.2);
+  outline: none;
 }
 
-/* Mensagem de status */
+.row-inputs-auth {
+  display: flex;
+  gap: 10px;
+}
+
+/* BOTÕES DE LOGIN */
+.btn-login {
+  padding: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: 0.3s;
+  letter-spacing: 1px;
+}
+
+.btn-login.primary {
+  background: var(--heimdall-eye-purple);
+  color: #fff;
+  box-shadow: 0 0 15px var(--heimdall-eye-glow);
+}
+
+.btn-login.primary:hover {
+  background: #b066ff;
+  box-shadow: 0 0 25px var(--heimdall-eye-purple);
+}
+
+.btn-login.secondary {
+  background: transparent;
+  border: 1px solid var(--gold-accent);
+  color: var(--gold-accent);
+}
+
+.btn-login.secondary:hover {
+  background: rgba(197, 160, 89, 0.1);
+  color: #fff;
+  border-color: #fff;
+}
+
+.toggle-text {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 10px;
+}
+
+.toggle-text span {
+  color: var(--gold-accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.toggle-text span:hover {
+  color: #fff;
+}
+
 .login-status {
   margin-top: 15px;
   min-height: 20px;
   font-size: 0.85rem;
 }
 
-/* Animações */
-@keyframes floatEye {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes pulseGlow {
-  0% {
-    opacity: 0.5;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  100% {
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
-}
-
-.btn-google {
-  background: transparent;
-  color: #fff;
-  border: 1px solid var(--heimdall-eye-purple);
-  /* Borda Roxa */
-  padding: 14px 24px;
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 20px;
-  transition: all 0.3s;
-}
-
-.btn-google:hover {
-  background: var(--heimdall-eye-purple);
-  color: #fff;
-  box-shadow: 0 0 25px var(--heimdall-eye-glow);
-  /* Brilho Roxo Intenso */
-}
-
-.icon-google {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  padding: 2px;
-}
-
 .hidden {
   display: none !important;
 }
 
-#btn-logout {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #aa3333;
-  color: #ff6666;
-  padding: 8px 16px;
-  font-family: 'Cinzel', serif;
-  cursor: pointer;
-  letter-spacing: 1px;
-  transition: 0.3s;
-}
-
-#btn-logout:hover {
-  background: #aa3333;
-  color: #fff;
-}
-
-/* --- APP PRINCIPAL --- */
+/* =========================================
+   APP PRINCIPAL
+   ========================================= */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -350,39 +290,40 @@ h1 {
   color: var(--gold-accent);
 }
 
-/* --- O "OLHO" DO HEIMDALL (BADGE) --- */
 .badge {
   background: rgba(161, 71, 255, 0.15);
   color: #e0aaff;
-  /* Lilás claro */
   border: 1px solid var(--heimdall-eye-purple);
   padding: 6px 18px;
   font-size: 0.85rem;
   font-weight: bold;
-  /* Glow inicial */
   box-shadow: 0 0 15px var(--heimdall-eye-glow);
-  /* Animação pulsante para parecer vivo */
   animation: eyePulse 3s infinite alternate ease-in-out;
 }
 
-/* Animação do pulsar dos olhos */
-@keyframes eyePulse {
-  0% {
-    box-shadow: 0 0 10px var(--heimdall-eye-glow);
-    filter: brightness(1);
-  }
+#btn-logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #aa3333;
+  color: #ff6666;
+  padding: 8px 16px;
+  font-family: 'Cinzel', serif;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
 
-  100% {
-    box-shadow: 0 0 25px var(--heimdall-eye-purple), 0 0 5px #00f0ff;
-    filter: brightness(1.3);
-  }
+#btn-logout:hover {
+  background: #aa3333;
+  color: #fff;
 }
 
 .card {
   background: var(--glass-panel);
   padding: 25px;
   border: var(--border-subtle);
-  /* Borda lateral agora é o gradiente Bifrost */
   border-image: var(--bifrost-gradient) 1;
   border-left-width: 3px;
   border-right: none;
@@ -399,11 +340,10 @@ h1 {
   gap: 20px;
 }
 
-/* Ajustado para 3 colunas (Data, Turno, Responsável) */
+/* GRID DO CABEÇALHO (3 COLUNAS) */
 .grid-times {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  /* 3 colunas iguais */
   gap: 20px;
 }
 
@@ -420,7 +360,6 @@ label {
   display: block;
 }
 
-/* --- INPUTS COM FOCO RÚNICO --- */
 input,
 select,
 textarea {
@@ -434,7 +373,6 @@ textarea {
   transition: all 0.3s;
 }
 
-/* Quando clica, brilha em roxo/bifrost */
 input:focus,
 textarea:focus {
   outline: none;
@@ -452,14 +390,14 @@ textarea:focus {
   font-family: 'Cinzel', serif;
   letter-spacing: 1px;
   cursor: not-allowed;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
-/* --- LISTA DE ATIVIDADES --- */
+/* =========================================
+   LINHAS DE ATIVIDADE
+   ========================================= */
 .atividade-row {
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
   padding: 20px;
-  /* Borda lateral roxa */
   border-left: 2px solid var(--heimdall-eye-purple);
   margin-bottom: 15px;
   border-bottom: 1px solid #222;
@@ -468,23 +406,13 @@ textarea:focus {
   transition: all 0.3s;
 }
 
-/* Efeito sutil ao passar o mouse na linha */
 .atividade-row:hover {
   border-left-color: #00c3ff;
-  /* Muda sutilmente para ciano (Bifrost) */
   box-shadow: inset 0 0 20px rgba(161, 71, 255, 0.1);
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.row-top {
+  margin-bottom: 15px;
 }
 
 .row-inputs {
@@ -502,7 +430,7 @@ textarea:focus {
 }
 
 .input-time {
-  width: 130px;
+  width: 110px;
   text-align: center;
   border: 1px solid #333;
   border-radius: 4px;
@@ -511,7 +439,7 @@ textarea:focus {
 .input-desc {
   flex: 1;
   font-weight: 600;
-  min-width: 250px;
+  min-width: 200px;
   background: transparent;
   border: none;
   border-bottom: 1px solid #444;
@@ -550,10 +478,136 @@ textarea:focus {
 
 .btn-remove:hover {
   color: #ff4444;
-  text-shadow: 0 0 10px #ff0000;
 }
 
-/* BARRA INFERIOR */
+/* --- ANEXO DE IMAGEM (CLIPE) --- */
+.attach-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hidden-input-file {
+  display: none;
+}
+
+.btn-attach {
+  background: transparent;
+  border: 1px solid #555;
+  color: #888;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-attach:hover {
+  border-color: var(--heimdall-eye-purple);
+  color: var(--heimdall-eye-purple);
+  background: rgba(161, 71, 255, 0.1);
+  box-shadow: 0 0 10px var(--heimdall-eye-glow);
+}
+
+.img-preview-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid var(--heimdall-eye-purple);
+  overflow: hidden;
+  position: relative;
+  display: none;
+  cursor: pointer;
+}
+
+.img-preview-container.visible {
+  display: block;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.img-preview-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remove-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ff4d4d;
+  font-size: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.img-preview-container:hover .btn-remove-img {
+  opacity: 1;
+}
+
+/* --- SETORES (BOTÕES) --- */
+.row-bottom-sectors {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sector-label {
+  font-size: 0.75rem;
+  color: var(--gold-accent);
+  font-weight: bold;
+  margin-right: 5px;
+  letter-spacing: 1px;
+}
+
+.mini-sector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-mini-sector {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.btn-mini-sector:hover {
+  border-color: var(--gold-accent);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-mini-sector.active {
+  background: var(--heimdall-eye-purple);
+  color: #fff;
+  border-color: var(--heimdall-eye-purple);
+  box-shadow: 0 0 15px var(--heimdall-eye-glow);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================
+   RODAPÉ E MODAIS
+   ========================================= */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -578,20 +632,17 @@ textarea:focus {
   text-transform: uppercase;
   transition: all 0.3s;
   letter-spacing: 1px;
-  position: relative;
   overflow: hidden;
 }
 
-/* Botão NOVA (Gradiente Bifrost) */
 .btn-add {
   background: var(--bifrost-gradient);
   color: #fff;
   box-shadow: 0 0 20px var(--heimdall-eye-glow);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .btn-add:hover {
-  box-shadow: 0 0 40px var(--heimdall-eye-purple), 0 0 10px #00f0ff;
+  box-shadow: 0 0 40px var(--heimdall-eye-purple);
   filter: brightness(1.1);
 }
 
@@ -652,9 +703,7 @@ textarea:focus {
   max-width: 450px;
   padding: 30px;
   border: 1px solid var(--heimdall-eye-purple);
-  /* Borda roxa no modal */
   box-shadow: 0 0 60px rgba(0, 0, 0, 1), inset 0 0 20px rgba(161, 71, 255, 0.1);
-  position: relative;
 }
 
 .modal-header h3 {
@@ -669,7 +718,6 @@ textarea:focus {
   background: none;
   border: none;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .btn-text:hover {
@@ -701,7 +749,6 @@ textarea:focus {
 
 .preset-item:hover {
   background: rgba(161, 71, 255, 0.08);
-  /* Hover roxo */
 }
 
 .btn-load {
@@ -718,7 +765,6 @@ textarea:focus {
 .btn-load:hover {
   border-color: var(--heimdall-eye-purple);
   color: var(--heimdall-eye-purple);
-  box-shadow: 0 0 15px var(--heimdall-eye-glow);
 }
 
 .btn-delete {
@@ -727,7 +773,6 @@ textarea:focus {
   font-size: 1.2rem;
   cursor: pointer;
   color: #444;
-  transition: 0.2s;
 }
 
 .btn-delete:hover {
@@ -748,139 +793,65 @@ textarea:focus {
   font-family: 'Cinzel', serif;
 }
 
-/* ESTILO DOS SETORES DENTRO DA ATIVIDADE */
-.row-bottom-sectors {
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  /* Borda divisória mais visível */
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+/* ANIMATIONS */
+@keyframes floatEye {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
-.sector-label {
-  font-size: 0.75rem;
-  color: var(--gold-accent);
-  /* MUDEI PARA DOURADO (Era #666) */
-  font-weight: bold;
-  margin-right: 5px;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 1px;
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
 }
 
-.mini-sector-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+@keyframes eyePulse {
+  0% {
+    box-shadow: 0 0 10px var(--heimdall-eye-glow);
+    filter: brightness(1);
+  }
+
+  100% {
+    box-shadow: 0 0 25px var(--heimdall-eye-purple);
+    filter: brightness(1.3);
+  }
 }
 
-.btn-mini-sector {
-  background: rgba(255, 255, 255, 0.05);
-  /* Levemente mais claro que o fundo */
-  border: 1px solid #555;
-  /* Borda mais clara */
-  color: #ccc;
-  /* Texto quase branco (Era #888) */
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  text-transform: uppercase;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.btn-mini-sector:hover {
-  border-color: var(--gold-accent);
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
 
-/* Quando selecionado (Ativo - Roxo Brilhante) */
-.btn-mini-sector.active {
-  background: var(--heimdall-eye-purple);
-  color: #fff;
-  border-color: var(--heimdall-eye-purple);
-  box-shadow: 0 0 15px var(--heimdall-eye-glow);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* --- BOTÃO DE ANEXO E PREVIEW --- */
-.attach-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* O input real fica invisível, usamos o botão estilizadão */
-.hidden-input-file {
-  display: none;
-}
-
-.btn-attach {
-  background: transparent;
-  border: 1px solid #555;
-  color: #888;
-  font-size: 1.2rem;
-  padding: 5px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-attach:hover {
-  border-color: var(--heimdall-eye-purple);
-  color: var(--heimdall-eye-purple);
-  background: rgba(161, 71, 255, 0.1);
-  box-shadow: 0 0 10px var(--heimdall-eye-glow);
-}
-
-.img-preview-container {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  border: 1px solid var(--heimdall-eye-purple);
-  overflow: hidden;
-  position: relative;
-  display: none;
-  /* Escondido por padrão */
-  cursor: pointer;
-}
-
-.img-preview-container.visible {
-  display: block;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.img-preview-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Botãozinho de remover foto (x) */
-.btn-remove-img {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: #ff4d4d;
-  font-size: 10px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: 0.2s;
-  font-weight: bold;
-}
-
-.img-preview-container:hover .btn-remove-img {
-  opacity: 1;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes popIn {
