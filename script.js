@@ -2,8 +2,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import {
   getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
@@ -27,23 +28,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
 let currentUser = null;
 
-// --- DOM ELEMENTS ---
+// DOMÍNIO FANTASMA (Para autenticar username como email)
+const FAKE_DOMAIN = "@heimdall.ops";
+
+// --- DOM ---
 const loginScreen = document.getElementById("login-screen");
 const appContent = document.getElementById("app-content");
-const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
 const msgLogin = document.getElementById("login-msg");
 
+// Forms Auth
+const formLogin = document.getElementById("form-login");
+const formRegister = document.getElementById("form-register");
+const linkCriar = document.getElementById("link-criar");
+const linkVoltar = document.getElementById("link-voltar");
+
+// Inputs Login
+const loginUser = document.getElementById("login-user");
+const loginPass = document.getElementById("login-pass");
+const btnEntrar = document.getElementById("btn-entrar");
+
+// Inputs Register
+const regName = document.getElementById("reg-name");
+const regSurname = document.getElementById("reg-surname");
+const regUser = document.getElementById("reg-user");
+const regPass = document.getElementById("reg-pass");
+const btnCadastrar = document.getElementById("btn-cadastrar");
+
+// App Inputs
 const listaAtividadesDiv = document.getElementById("lista-atividades");
 const btnAdd = document.getElementById("btn-add");
 const btnPdf = document.getElementById("btn-pdf");
 const dataInput = document.getElementById("dataRelatorio");
 const turnoInput = document.getElementById("turnoRelatorio");
 const responsavelInput = document.getElementById("responsavel");
-
 const btnOpenPresets = document.getElementById("btn-open-presets");
 const modalPresets = document.getElementById("modal-presets");
 const btnCloseModal = document.getElementById("btn-close-modal");
@@ -52,7 +72,6 @@ const msgEmpty = document.getElementById("msg-empty");
 const inputPresetName = document.getElementById("input-preset-name");
 const btnSavePreset = document.getElementById("btn-save-preset");
 
-// LISTA DE SETORES
 const SETORES = [
   "Geral",
   "Reversa",
@@ -64,23 +83,88 @@ const SETORES = [
 ];
 
 // ==========================================
-// 1. AUTENTICAÇÃO
+// 1. LÓGICA DE AUTH (LOGIN & CADASTRO)
 // ==========================================
 
-if (btnLogin) {
-  btnLogin.addEventListener("click", () => {
-    msgLogin.innerText = "Conectando ao Heimdall...";
-    msgLogin.style.color = "#c5a059";
-    signInWithPopup(auth, provider)
-      .then((result) => verificarAcesso(result.user))
-      .catch((error) => {
-        console.error(error);
-        msgLogin.innerText = "Erro: " + error.message;
-        msgLogin.style.color = "#ff4d4d";
+// Alternar entre Login e Cadastro
+linkCriar.addEventListener("click", () => {
+  formLogin.classList.add("hidden");
+  formRegister.classList.remove("hidden");
+  msgLogin.innerText = "";
+});
+
+linkVoltar.addEventListener("click", () => {
+  formRegister.classList.add("hidden");
+  formLogin.classList.remove("hidden");
+  msgLogin.innerText = "";
+});
+
+// --- LOGIN ---
+btnEntrar.addEventListener("click", () => {
+  const username = loginUser.value.trim();
+  const password = loginPass.value.trim();
+
+  if (!username || !password)
+    return showMsg("Preencha usuário e senha.", "red");
+
+  // Adiciona o domínio falso para o Firebase aceitar
+  const emailFake = username + FAKE_DOMAIN;
+
+  showMsg("Verificando credenciais...", "#c5a059");
+
+  signInWithEmailAndPassword(auth, emailFake, password)
+    .then((result) => {
+      // Sucesso - o onAuthStateChanged vai lidar com o resto
+    })
+    .catch((error) => {
+      console.error(error);
+      if (error.code === "auth/invalid-credential")
+        showMsg("Usuário ou senha incorretos.", "red");
+      else showMsg("Erro: " + error.code, "red");
+    });
+});
+
+// --- CADASTRO ---
+btnCadastrar.addEventListener("click", () => {
+  const nome = regName.value.trim();
+  const sobrenome = regSurname.value.trim();
+  const username = regUser.value.trim();
+  const password = regPass.value.trim();
+
+  if (!nome || !sobrenome || !username || !password)
+    return showMsg("Preencha todos os campos.", "red");
+  if (password.length < 6)
+    return showMsg("A senha precisa ter 6+ caracteres.", "red");
+
+  const emailFake = username + FAKE_DOMAIN;
+  const nomeCompleto = `${nome} ${sobrenome}`;
+
+  showMsg("Criando guardião...", "#c5a059");
+
+  createUserWithEmailAndPassword(auth, emailFake, password)
+    .then((result) => {
+      // Usuário criado! Agora atualizamos o Nome de Exibição (displayName)
+      updateProfile(result.user, {
+        displayName: nomeCompleto,
+      }).then(() => {
+        // Recarrega para pegar o nome atualizado
+        window.location.reload();
       });
-  });
+    })
+    .catch((error) => {
+      console.error(error);
+      if (error.code === "auth/email-already-in-use")
+        showMsg("Usuário já existe!", "red");
+      else showMsg("Erro: " + error.code, "red");
+    });
+});
+
+function showMsg(txt, color) {
+  msgLogin.innerText = txt;
+  msgLogin.style.color = color;
 }
 
+// Logout
 if (btnLogout) {
   btnLogout.addEventListener("click", () => {
     if (confirm("Encerrar sessão?"))
@@ -88,44 +172,34 @@ if (btnLogout) {
   });
 }
 
+// Observer de Estado
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
-    verificarAcesso(user);
+    mostrarApp(user);
   } else {
     currentUser = null;
     mostrarTelaLogin();
   }
 });
 
-function verificarAcesso(user) {
-  const email = user.email;
-  // Permite @mercadolivre.com OU seu email específico
-  const isMercadoLivre = email.endsWith("@mercadolivre.com");
-  const isAdmin = email === "guilherme.rauzes@gmail.com";
-
-  if (isMercadoLivre || isAdmin) {
-    mostrarApp(user);
-  } else {
-    msgLogin.innerText = `Acesso negado: ${email}`;
-    msgLogin.style.color = "#ff4d4d";
-    signOut(auth);
-  }
-}
-
 function mostrarApp(user) {
   loginScreen.classList.add("hidden");
   appContent.classList.remove("hidden");
-  if (responsavelInput) responsavelInput.value = user.displayName;
+  // Se tiver displayName (Nome Sobrenome), usa. Se não, usa o "email" sem o dominio.
+  const nomeExibicao = user.displayName || user.email.split("@")[0];
+  if (responsavelInput) responsavelInput.value = nomeExibicao;
 }
 
 function mostrarTelaLogin() {
   loginScreen.classList.remove("hidden");
   appContent.classList.add("hidden");
+  formLogin.classList.remove("hidden");
+  formRegister.classList.add("hidden");
 }
 
 // ==========================================
-// 2. LÓGICA DE ATIVIDADES (COM FOTO E SETORES)
+// 2. LÓGICA DE ATIVIDADES
 // ==========================================
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -133,7 +207,6 @@ window.addEventListener("DOMContentLoaded", () => {
   adicionarLinha();
 });
 
-// Gera os botões de setor (Suporta Multi-Select)
 function gerarBotoesSetor(setoresTexto = "Geral") {
   const setoresAtivos = setoresTexto.split(", ");
   return SETORES.map((setor) => {
@@ -195,32 +268,29 @@ function adicionarLinha(
     </div>
   `;
 
-  // --- LÓGICA DA FOTO ---
+  // Foto
   const btnAttach = div.querySelector(".btn-attach");
   const inputFile = div.querySelector(".hidden-input-file");
   const previewContainer = div.querySelector(".img-preview-container");
   const imgThumb = div.querySelector(".img-thumb");
   const btnRemoveImg = div.querySelector(".btn-remove-img");
 
-  // Abrir seletor
   btnAttach.addEventListener("click", () => inputFile.click());
 
-  // Ao selecionar arquivo
   inputFile.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (evt) {
-        imgThumb.src = evt.target.result; // Base64
-        previewContainer.classList.add("visible"); // Mostra preview
+        imgThumb.src = evt.target.result;
+        previewContainer.classList.add("visible");
         previewContainer.style.display = "block";
-        btnAttach.style.display = "none"; // Esconde ícone
+        btnAttach.style.display = "none";
       };
       reader.readAsDataURL(file);
     }
   });
 
-  // Remover foto
   btnRemoveImg.addEventListener("click", () => {
     inputFile.value = "";
     imgThumb.src = "";
@@ -229,24 +299,21 @@ function adicionarLinha(
     btnAttach.style.display = "block";
   });
 
-  // --- LÓGICA DE SETORES (Multi-Select) ---
+  // Setores
   const botoesSetor = div.querySelectorAll(".btn-mini-sector");
   const inputSetor = div.querySelector(".input-setor");
 
   botoesSetor.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      btn.classList.toggle("active"); // Liga/Desliga
-
+      btn.classList.toggle("active");
       const ativos = [];
       div
         .querySelectorAll(".btn-mini-sector.active")
         .forEach((b) => ativos.push(b.dataset.value));
-
       inputSetor.value = ativos.join(", ");
     });
   });
 
-  // Remover linha
   div
     .querySelector(".btn-remove")
     .addEventListener("click", () => div.remove());
@@ -257,12 +324,10 @@ function adicionarLinha(
   }
 }
 
-// Coleta dados da tela (incluindo Imagem Base64)
 function atualizarListaInterna() {
   const lista = [];
   const rows = document.querySelectorAll(".atividade-row");
   rows.forEach((row) => {
-    // Checa se tem imagem visível
     const imgThumb = row.querySelector(".img-thumb");
     const hasImage =
       row.querySelector(".img-preview-container").style.display === "block";
@@ -274,7 +339,7 @@ function atualizarListaInterna() {
       descricao: row.querySelector(".input-desc").value,
       detalhe: row.querySelector(".input-detalhe").value,
       setor: row.querySelector(".input-setor").value,
-      imagem: imagemBase64, // Guarda a foto
+      imagem: imagemBase64,
     });
   });
   return lista;
@@ -283,13 +348,13 @@ function atualizarListaInterna() {
 if (btnAdd) btnAdd.addEventListener("click", () => adicionarLinha());
 
 // ==========================================
-// 3. PRESETS (MODELOS) - SEM FOTO
+// 3. PRESETS
 // ==========================================
 
 if (btnOpenPresets) {
   btnOpenPresets.addEventListener("click", async () => {
     modalPresets.classList.remove("hidden");
-    msgEmpty.innerText = "Acessando banco de dados...";
+    msgEmpty.innerText = "Carregando...";
     presetsListUl.innerHTML = "";
     await carregarPresetsDoFirestore();
   });
@@ -305,15 +370,13 @@ if (btnSavePreset) {
     const nomeModelo = inputPresetName.value.trim();
     if (!nomeModelo) return alert("Dê um nome ao modelo!");
 
-    // Pega os dados
     const dadosBrutos = atualizarListaInterna();
     if (dadosBrutos.length === 0) return alert("Adicione atividades.");
     if (!currentUser) return alert("Erro de usuário.");
 
-    // REMOVE AS FOTOS ANTES DE SALVAR NO BANCO (Pra não estourar cota)
     const dadosParaSalvar = dadosBrutos.map((item) => ({
       ...item,
-      imagem: null, // Limpa a imagem
+      imagem: null,
     }));
 
     try {
@@ -328,12 +391,12 @@ if (btnSavePreset) {
 
       await setDoc(docRef, { presets: presetsAtuais });
 
-      alert("Modelo salvo com sucesso (sem fotos)!");
+      alert("Salvo com sucesso!");
       inputPresetName.value = "";
       await carregarPresetsDoFirestore();
     } catch (error) {
       console.error(error);
-      alert("Erro ao salvar: " + error.message);
+      alert("Erro: " + error.message);
     } finally {
       btnSavePreset.textContent = "Salvar";
       btnSavePreset.disabled = false;
@@ -370,7 +433,7 @@ function criarItemLista(nome, todosPresets) {
     modalPresets.classList.add("hidden");
   });
   li.querySelector(".btn-delete").addEventListener("click", async () => {
-    if (confirm(`Excluir modelo "${nome}"?`)) {
+    if (confirm(`Excluir "${nome}"?`)) {
       delete todosPresets[nome];
       await setDoc(doc(db, "usuarios_presets", currentUser.uid), {
         presets: todosPresets,
@@ -382,7 +445,7 @@ function criarItemLista(nome, todosPresets) {
 }
 
 // ==========================================
-// 4. GERAÇÃO DE PDF (COM FOTOS)
+// 4. PDF
 // ==========================================
 
 if (btnPdf) {
@@ -393,10 +456,8 @@ if (btnPdf) {
       : "Não informado";
     const turno = turnoInput ? turnoInput.value || "N/A" : "N/A";
 
-    // Tratamento de Data
     const dataRaw = dataInput ? dataInput.value : "";
     const dataFormatada = dataRaw ? dataRaw.split("-").reverse().join("/") : "";
-    // Variável corrigida para nome do arquivo
     const dataArquivo = dataRaw
       ? dataRaw.split("-").reverse().join("-")
       : "sem-data";
@@ -437,7 +498,6 @@ if (btnPdf) {
         {
           table: {
             headerRows: 1,
-            // 5 Colunas: Início, Fim, Setor, Atividade, Detalhes (com Foto)
             widths: ["auto", "auto", "auto", 120, "*"],
             body: [
               [
@@ -448,7 +508,6 @@ if (btnPdf) {
                 { text: "Detalhes / Evidências", style: "tableHeader" },
               ],
               ...dados.map((item) => {
-                // Monta a célula de detalhes
                 const detalhesStack = [
                   {
                     text: item.detalhe,
@@ -458,7 +517,6 @@ if (btnPdf) {
                   },
                 ];
 
-                // Se tiver foto, adiciona na pilha
                 if (item.imagem) {
                   detalhesStack.push({
                     image: item.imagem,
@@ -484,7 +542,7 @@ if (btnPdf) {
                     fontSize: 10,
                     margin: [0, 5],
                   },
-                  { stack: detalhesStack, margin: [0, 5] }, // Usa stack
+                  { stack: detalhesStack, margin: [0, 5] },
                 ];
               }),
             ],
@@ -503,6 +561,15 @@ if (btnPdf) {
               return "#ddd";
             },
           },
+        },
+
+        {
+          text: "\nGerado via Heimdall Ops",
+          style: "footer",
+          alignment: "center",
+          fontSize: 8,
+          color: "#999",
+          margin: [0, 20, 0, 0],
         },
       ],
 
@@ -525,7 +592,6 @@ if (btnPdf) {
       },
     };
 
-    // Abre em nova aba
     pdfMake.createPdf(docDefinition).open();
   });
 }
