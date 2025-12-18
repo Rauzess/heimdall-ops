@@ -807,3 +807,88 @@ textarea:focus {
   box-shadow: 0 0 15px var(--heimdall-eye-glow);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
+
+/* --- BOTÃO DE ANEXO E PREVIEW --- */
+.attach-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* O input real fica invisível, usamos o botão estilizadão */
+.hidden-input-file {
+  display: none;
+}
+
+.btn-attach {
+  background: transparent;
+  border: 1px solid #555;
+  color: #888;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-attach:hover {
+  border-color: var(--heimdall-eye-purple);
+  color: var(--heimdall-eye-purple);
+  background: rgba(161, 71, 255, 0.1);
+  box-shadow: 0 0 10px var(--heimdall-eye-glow);
+}
+
+.img-preview-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid var(--heimdall-eye-purple);
+  overflow: hidden;
+  position: relative;
+  display: none;
+  /* Escondido por padrão */
+  cursor: pointer;
+}
+
+.img-preview-container.visible {
+  display: block;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.img-preview-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botãozinho de remover foto (x) */
+.btn-remove-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ff4d4d;
+  font-size: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.img-preview-container:hover .btn-remove-img {
+  opacity: 1;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
