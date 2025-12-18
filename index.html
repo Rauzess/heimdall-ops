@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heimdall Ops - Relatório de Rondas</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  </head>
+  <body>
+    <div id="login-screen">
+      <div class="login-card">
+        <div class="rune-eye-container">
+          <svg
+            class="rune-eye"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+              fill="currentColor"
+            />
+          </svg>
+          <div class="eye-glow"></div>
+        </div>
+
+        <h1>Heimdall <span class="ops-highlight">Ops</span></h1>
+        <div class="separator-line"></div>
+        <p>Acesso Restrito - IS OPS</p>
+
+        <button id="btn-login" class="btn-google">
+          <svg
+            class="icon-google"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
+              fill="currentColor"
+            />
+          </svg>
+          Entrar com E-mail Corporativo
+        </button>
+        <p id="login-msg" class="login-status"></p>
+      </div>
+    </div>
+
+    <div id="app-content" class="hidden">
+      <button id="btn-logout">Sair 🚪</button>
+
+      <datalist id="lista-global-atividades">
+        <option value="Suporte e Verificação Inicial"></option>
+        <option value="Inspeção Conjunta e Geral"></option>
+        <option value="Ronda de Qualidade"></option>
+        <option value="Atendimento de Chamado"></option>
+        <option value="Manutenção de Impressoras"></option>
+        <option value="Troca de Toner/Etiquetas"></option>
+        <option value="Ronda Perimetral"></option>
+        <option value="Organização do Setor"></option>
+      </datalist>
+
+      <div class="container">
+        <header>
+          <h1>RELATÓRIO <span class="highlight">BRPR01</span></h1>
+          <span class="badge">HEIMDALL OPS</span>
+        </header>
+
+        <div class="card config-card">
+          <div class="grid-times">
+            <div>
+              <label>Data</label>
+              <input type="date" id="dataRelatorio" />
+            </div>
+
+            <div>
+              <label>Turno</label>
+              <select id="turnoRelatorio">
+                <option value="" disabled selected>Selecione...</option>
+                <option value="T1">T1</option>
+                <option value="T2">T2</option>
+                <option value="T3">T3</option>
+                <option value="T4">T4</option>
+                <option value="T5">T5</option>
+                <option value="ADM">Horário Adm</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Responsável</label>
+              <input
+                type="text"
+                id="responsavel"
+                readonly
+                placeholder="Carregando..."
+              />
+            </div>
+          </div>
+
+          <button id="btn-open-presets" class="btn-outline">
+            📂 Meus Modelos
+          </button>
+        </div>
+
+        <div id="lista-atividades"></div>
+      </div>
+
+      <div class="bottom-bar">
+        <button class="btn btn-add" id="btn-add">+ Nova Atividade</button>
+        <button class="btn btn-pdf" id="btn-pdf">Gerar PDF</button>
+      </div>
+
+      <div id="modal-presets" class="modal-overlay hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Gerenciar Modelos</h3>
+            <button id="btn-close-modal" class="btn-text">✕</button>
+          </div>
+          <div class="modal-body">
+            <ul id="presets-list" class="presets-list"></ul>
+            <p class="empty-msg" id="msg-empty">Nenhum modelo salvo.</p>
+          </div>
+          <div class="modal-footer">
+            <div class="save-group">
+              <input
+                type="text"
+                id="input-preset-name"
+                placeholder="Nome (ex: T3 Padrão)"
+              />
+              <button id="btn-save-preset" class="btn-primary-small">
+                Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
