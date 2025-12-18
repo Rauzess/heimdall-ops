@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Heimdall Ops - Relatório de Rondas</title>
+    <title>Heimdall Ops - Acesso Restrito</title>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
@@ -35,23 +35,59 @@
 
         <h1>Heimdall <span class="ops-highlight">Ops</span></h1>
         <div class="separator-line"></div>
-        <p>Acesso Restrito - IS OPS</p>
 
-        <button id="btn-login" class="btn-google">
-          <svg
-            class="icon-google"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-              fill="currentColor"
-            />
-          </svg>
-          Entrar com E-mail Corporativo
-        </button>
+        <div id="form-login" class="auth-form">
+          <p class="auth-title">LOGIN DE GUARDIÃO</p>
+          <input
+            type="text"
+            id="login-user"
+            placeholder="Usuário"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-pass"
+            placeholder="Senha"
+            autocomplete="current-password"
+          />
+
+          <button id="btn-entrar" class="btn-login primary">Entrar</button>
+
+          <p class="toggle-text">
+            Não tem acesso? <span id="link-criar">Cadastrar-se</span>
+          </p>
+        </div>
+
+        <div id="form-register" class="auth-form hidden">
+          <p class="auth-title">NOVO REGISTRO</p>
+
+          <div class="row-inputs-auth">
+            <input type="text" id="reg-name" placeholder="Nome" />
+            <input type="text" id="reg-surname" placeholder="Sobrenome" />
+          </div>
+
+          <input
+            type="text"
+            id="reg-user"
+            placeholder="Criar Usuário"
+            autocomplete="off"
+          />
+          <input
+            type="password"
+            id="reg-pass"
+            placeholder="Criar Senha"
+            autocomplete="new-password"
+          />
+
+          <button id="btn-cadastrar" class="btn-login secondary">
+            Registrar
+          </button>
+
+          <p class="toggle-text">
+            Já possui conta? <span id="link-voltar">Voltar ao Login</span>
+          </p>
+        </div>
+
         <p id="login-msg" class="login-status"></p>
       </div>
     </div>
