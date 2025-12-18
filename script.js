@@ -63,7 +63,9 @@ const SETORES = [
   "Esteiras",
 ];
 
-// --- 1. AUTENTICAÇÃO ---
+// ==========================================
+// 1. AUTENTICAÇÃO
+// ==========================================
 
 if (btnLogin) {
   btnLogin.addEventListener("click", () => {
@@ -122,7 +124,9 @@ function mostrarTelaLogin() {
   appContent.classList.add("hidden");
 }
 
-// --- 2. LÓGICA DE ATIVIDADES E SETORES ---
+// ==========================================
+// 2. LÓGICA DE ATIVIDADES (COM FOTO E SETORES)
+// ==========================================
 
 window.addEventListener("DOMContentLoaded", () => {
   if (dataInput) dataInput.valueAsDate = new Date();
@@ -166,6 +170,17 @@ function adicionarLinha(
           <input type="time" class="input-time input-fim" value="${valFim}" aria-label="Fim">
         </div>
         <input type="text" class="input-desc" list="lista-global-atividades" placeholder="Atividade..." value="${dados.descricao}">
+
+        <div class="attach-group">
+          <input type="file" class="hidden-input-file" accept="image/*">
+          <button class="btn-attach" title="Anexar Evidência">📎</button>
+
+          <div class="img-preview-container">
+            <img src="" class="img-thumb">
+            <div class="btn-remove-img">X</div>
+          </div>
+        </div>
+
         <button class="btn-remove" aria-label="Remover">✕</button>
       </div>
       <textarea class="input-detalhe" placeholder="Detalhes (opcional)...">${dados.detalhe}</textarea>
@@ -180,7 +195,41 @@ function adicionarLinha(
     </div>
   `;
 
-  // Lógica de clique nos botões (Toggle / Checkbox)
+  // --- LÓGICA DA FOTO ---
+  const btnAttach = div.querySelector(".btn-attach");
+  const inputFile = div.querySelector(".hidden-input-file");
+  const previewContainer = div.querySelector(".img-preview-container");
+  const imgThumb = div.querySelector(".img-thumb");
+  const btnRemoveImg = div.querySelector(".btn-remove-img");
+
+  // Abrir seletor
+  btnAttach.addEventListener("click", () => inputFile.click());
+
+  // Ao selecionar arquivo
+  inputFile.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        imgThumb.src = evt.target.result; // Base64
+        previewContainer.classList.add("visible"); // Mostra preview
+        previewContainer.style.display = "block";
+        btnAttach.style.display = "none"; // Esconde ícone
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Remover foto
+  btnRemoveImg.addEventListener("click", () => {
+    inputFile.value = "";
+    imgThumb.src = "";
+    previewContainer.classList.remove("visible");
+    previewContainer.style.display = "none";
+    btnAttach.style.display = "block";
+  });
+
+  // --- LÓGICA DE SETORES (Multi-Select) ---
   const botoesSetor = div.querySelectorAll(".btn-mini-sector");
   const inputSetor = div.querySelector(".input-setor");
 
@@ -193,11 +242,11 @@ function adicionarLinha(
         .querySelectorAll(".btn-mini-sector.active")
         .forEach((b) => ativos.push(b.dataset.value));
 
-      // Se desmarcar tudo, define como vazio ou volta pra Geral (opcional)
       inputSetor.value = ativos.join(", ");
     });
   });
 
+  // Remover linha
   div
     .querySelector(".btn-remove")
     .addEventListener("click", () => div.remove());
@@ -208,16 +257,24 @@ function adicionarLinha(
   }
 }
 
+// Coleta dados da tela (incluindo Imagem Base64)
 function atualizarListaInterna() {
   const lista = [];
   const rows = document.querySelectorAll(".atividade-row");
   rows.forEach((row) => {
+    // Checa se tem imagem visível
+    const imgThumb = row.querySelector(".img-thumb");
+    const hasImage =
+      row.querySelector(".img-preview-container").style.display === "block";
+    const imagemBase64 = hasImage ? imgThumb.src : null;
+
     lista.push({
       inicio: row.querySelector(".input-inicio").value,
       fim: row.querySelector(".input-fim").value,
       descricao: row.querySelector(".input-desc").value,
       detalhe: row.querySelector(".input-detalhe").value,
-      setor: row.querySelector(".input-setor").value, // Pega os setores múltiplos
+      setor: row.querySelector(".input-setor").value,
+      imagem: imagemBase64, // Guarda a foto
     });
   });
   return lista;
@@ -225,7 +282,9 @@ function atualizarListaInterna() {
 
 if (btnAdd) btnAdd.addEventListener("click", () => adicionarLinha());
 
-// --- 3. PRESETS (MODELOS) ---
+// ==========================================
+// 3. PRESETS (MODELOS) - SEM FOTO
+// ==========================================
 
 if (btnOpenPresets) {
   btnOpenPresets.addEventListener("click", async () => {
@@ -246,9 +305,16 @@ if (btnSavePreset) {
     const nomeModelo = inputPresetName.value.trim();
     if (!nomeModelo) return alert("Dê um nome ao modelo!");
 
-    const dados = atualizarListaInterna();
-    if (dados.length === 0) return alert("Adicione atividades.");
+    // Pega os dados
+    const dadosBrutos = atualizarListaInterna();
+    if (dadosBrutos.length === 0) return alert("Adicione atividades.");
     if (!currentUser) return alert("Erro de usuário.");
+
+    // REMOVE AS FOTOS ANTES DE SALVAR NO BANCO (Pra não estourar cota)
+    const dadosParaSalvar = dadosBrutos.map((item) => ({
+      ...item,
+      imagem: null, // Limpa a imagem
+    }));
 
     try {
       btnSavePreset.textContent = "Salvando...";
@@ -258,11 +324,11 @@ if (btnSavePreset) {
       const docSnap = await getDoc(docRef);
       let presetsAtuais = docSnap.exists() ? docSnap.data().presets : {};
 
-      presetsAtuais[nomeModelo] = dados;
+      presetsAtuais[nomeModelo] = dadosParaSalvar;
 
       await setDoc(docRef, { presets: presetsAtuais });
 
-      alert("Modelo salvo com sucesso!");
+      alert("Modelo salvo com sucesso (sem fotos)!");
       inputPresetName.value = "";
       await carregarPresetsDoFirestore();
     } catch (error) {
@@ -315,7 +381,9 @@ function criarItemLista(nome, todosPresets) {
   presetsListUl.appendChild(li);
 }
 
-// --- 4. GERAÇÃO DE PDF ---
+// ==========================================
+// 4. GERAÇÃO DE PDF (COM FOTOS)
+// ==========================================
 
 if (btnPdf) {
   btnPdf.addEventListener("click", () => {
@@ -325,9 +393,13 @@ if (btnPdf) {
       : "Não informado";
     const turno = turnoInput ? turnoInput.value || "N/A" : "N/A";
 
-    // Tratamento de Data para evitar erros
+    // Tratamento de Data
     const dataRaw = dataInput ? dataInput.value : "";
     const dataFormatada = dataRaw ? dataRaw.split("-").reverse().join("/") : "";
+    // Variável corrigida para nome do arquivo
+    const dataArquivo = dataRaw
+      ? dataRaw.split("-").reverse().join("-")
+      : "sem-data";
 
     if (dados.length === 0) return alert("O relatório está vazio.");
 
@@ -365,7 +437,7 @@ if (btnPdf) {
         {
           table: {
             headerRows: 1,
-            // 5 Colunas: Início, Fim, Setor, Atividade, Detalhes
+            // 5 Colunas: Início, Fim, Setor, Atividade, Detalhes (com Foto)
             widths: ["auto", "auto", "auto", 120, "*"],
             body: [
               [
@@ -373,32 +445,48 @@ if (btnPdf) {
                 { text: "Fim", style: "tableHeader" },
                 { text: "Setor(es)", style: "tableHeader" },
                 { text: "Atividade", style: "tableHeader" },
-                { text: "Detalhes", style: "tableHeader" },
+                { text: "Detalhes / Evidências", style: "tableHeader" },
               ],
-              ...dados.map((item) => [
-                { text: item.inicio, alignment: "center", margin: [0, 5] },
-                { text: item.fim, alignment: "center", margin: [0, 5] },
-                {
-                  text: item.setor || "-",
-                  bold: true,
-                  color: "#1a237e",
-                  alignment: "center",
-                  fontSize: 9,
-                  margin: [0, 5],
-                },
-                {
-                  text: item.descricao,
-                  bold: true,
-                  fontSize: 10,
-                  margin: [0, 5],
-                },
-                {
-                  text: item.detalhe,
-                  color: "#333",
-                  fontSize: 10,
-                  margin: [0, 5],
-                },
-              ]),
+              ...dados.map((item) => {
+                // Monta a célula de detalhes
+                const detalhesStack = [
+                  {
+                    text: item.detalhe,
+                    color: "#333",
+                    fontSize: 10,
+                    margin: [0, 0, 0, 5],
+                  },
+                ];
+
+                // Se tiver foto, adiciona na pilha
+                if (item.imagem) {
+                  detalhesStack.push({
+                    image: item.imagem,
+                    width: 150,
+                    margin: [0, 5, 0, 0],
+                  });
+                }
+
+                return [
+                  { text: item.inicio, alignment: "center", margin: [0, 5] },
+                  { text: item.fim, alignment: "center", margin: [0, 5] },
+                  {
+                    text: item.setor || "-",
+                    bold: true,
+                    color: "#1a237e",
+                    alignment: "center",
+                    fontSize: 9,
+                    margin: [0, 5],
+                  },
+                  {
+                    text: item.descricao,
+                    bold: true,
+                    fontSize: 10,
+                    margin: [0, 5],
+                  },
+                  { stack: detalhesStack, margin: [0, 5] }, // Usa stack
+                ];
+              }),
             ],
           },
           layout: {
@@ -437,7 +525,7 @@ if (btnPdf) {
       },
     };
 
-    // Abre o PDF em nova aba (Sem travar)
+    // Abre em nova aba
     pdfMake.createPdf(docDefinition).open();
   });
 }
