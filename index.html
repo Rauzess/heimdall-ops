@@ -9,7 +9,6 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="style.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
@@ -50,9 +49,7 @@
             placeholder="Senha"
             autocomplete="current-password"
           />
-
           <button id="btn-entrar" class="btn-login primary">Entrar</button>
-
           <p class="toggle-text">
             Não tem acesso? <span id="link-criar">Cadastrar-se</span>
           </p>
@@ -60,12 +57,10 @@
 
         <div id="form-register" class="auth-form hidden">
           <p class="auth-title">NOVO REGISTRO</p>
-
           <div class="row-inputs-auth">
             <input type="text" id="reg-name" placeholder="Nome" />
             <input type="text" id="reg-surname" placeholder="Sobrenome" />
           </div>
-
           <input
             type="text"
             id="reg-user"
@@ -78,11 +73,9 @@
             placeholder="Criar Senha"
             autocomplete="new-password"
           />
-
           <button id="btn-cadastrar" class="btn-login secondary">
             Registrar
           </button>
-
           <p class="toggle-text">
             Já possui conta? <span id="link-voltar">Voltar ao Login</span>
           </p>
@@ -107,6 +100,30 @@
       </datalist>
 
       <div class="container">
+        <div id="dashboard-panel" class="dashboard-grid">
+          <div class="stat-card">
+            <span class="stat-icon">📅</span>
+            <div class="stat-info">
+              <h3 id="stat-rondas">0</h3>
+              <p>Rondas (Mês)</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">⚡</span>
+            <div class="stat-info">
+              <h3 id="stat-atividades">0</h3>
+              <p>Atividades (Mês)</p>
+            </div>
+          </div>
+          <div class="stat-card highlight-card">
+            <span class="stat-icon">⏳</span>
+            <div class="stat-info">
+              <h3 id="stat-horas">0h 00m</h3>
+              <p>Horas (Mês)</p>
+            </div>
+          </div>
+        </div>
+
         <header>
           <h1>RELATÓRIO <span class="highlight">BRPR01</span></h1>
           <span class="badge">HEIMDALL OPS</span>
@@ -118,7 +135,6 @@
               <label>Data</label>
               <input type="date" id="dataRelatorio" />
             </div>
-
             <div>
               <label>Turno</label>
               <select id="turnoRelatorio">
@@ -131,7 +147,6 @@
                 <option value="ADM">Horário Adm</option>
               </select>
             </div>
-
             <div>
               <label>Responsável</label>
               <input
@@ -143,9 +158,14 @@
             </div>
           </div>
 
-          <button id="btn-open-presets" class="btn-outline">
-            📂 Meus Modelos
-          </button>
+          <div class="action-row">
+            <button id="btn-open-presets" class="btn-outline">
+              📂 Meus Modelos
+            </button>
+            <button id="btn-open-history" class="btn-outline">
+              📜 Histórico / Edição
+            </button>
+          </div>
         </div>
 
         <div id="lista-atividades"></div>
@@ -153,6 +173,13 @@
 
       <div class="bottom-bar">
         <button class="btn btn-add" id="btn-add">+ Nova Atividade</button>
+        <button
+          class="btn btn-outline"
+          id="btn-save-retro"
+          style="border: 1px solid #fff; color: #fff"
+        >
+          💾 Salvar (S/ PDF)
+        </button>
         <button class="btn btn-pdf" id="btn-pdf">Gerar PDF</button>
       </div>
 
@@ -164,7 +191,7 @@
           </div>
           <div class="modal-body">
             <ul id="presets-list" class="presets-list"></ul>
-            <p class="empty-msg" id="msg-empty">Nenhum modelo salvo.</p>
+            <p class="empty-msg" id="msg-empty-presets">Nenhum modelo salvo.</p>
           </div>
           <div class="modal-footer">
             <div class="save-group">
@@ -177,6 +204,21 @@
                 Salvar
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="modal-history" class="modal-overlay hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Histórico de Rondas</h3>
+            <button id="btn-close-history" class="btn-text">✕</button>
+          </div>
+          <div class="modal-body">
+            <ul id="history-list" class="presets-list"></ul>
+            <p class="empty-msg" id="msg-empty-history">
+              Nenhum registro encontrado.
+            </p>
           </div>
         </div>
       </div>
