@@ -1,18 +1,17 @@
-/* --- RESET --- */
+/* =========================================
+   RESET & VARIÁVEIS GLOBAIS
+   ========================================= */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* VARIÁVEIS DO TEMA HEIMDALL */
 :root {
   --bg-dark: #050505;
   --glass-panel: rgba(18, 18, 20, 0.85);
   --gold-accent: #c5a059;
-  /* Ouro */
   --heimdall-eye-purple: #a147ff;
-  /* Roxo do Olho */
   --heimdall-eye-glow: rgba(161, 71, 255, 0.6);
   --bifrost-gradient: linear-gradient(135deg, #a147ff, #00c3ff);
   --text-main: #e0e0e0;
@@ -20,14 +19,16 @@
   --border-subtle: 1px solid rgba(197, 160, 89, 0.3);
 }
 
-/* FONTES */
+/* =========================================
+   ESTRUTURA BÁSICA & FUNDO
+   ========================================= */
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 
-  /* BACKGROUND ÉPICO */
+  /* Wallpaper Épico */
   background:
     linear-gradient(rgba(10, 15, 25, 0.85), rgba(5, 10, 20, 0.95)),
     url('https://t4.ftcdn.net/jpg/16/64/82/77/360_F_1664827776_MEKNJB76xqUqlAJkeG2QE546yJ5TIJ7O.jpg');
@@ -36,6 +37,7 @@ body {
   background-attachment: fixed;
 }
 
+/* Tipografia Estilizada */
 h1,
 h2,
 h3,
@@ -49,7 +51,7 @@ label,
   letter-spacing: 1.5px;
 }
 
-/* ÍCONES DE INPUT (DATE/TIME) BRANCOS */
+/* Ícones de Inputs (Brancos para contraste) */
 input[type="time"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
@@ -65,7 +67,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =========================================
-   TELA DE LOGIN E CADASTRO
+   TELA DE LOGIN
    ========================================= */
 #login-screen {
   position: fixed;
@@ -98,6 +100,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   overflow: hidden;
 }
 
+/* Linha de brilho superior */
 .login-card::before {
   content: "";
   position: absolute;
@@ -110,7 +113,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 0 10px var(--gold-accent);
 }
 
-/* OLHO RÚNICO */
+/* Olho Rúnico (Animação) */
 .rune-eye-container {
   position: relative;
   width: 80px;
@@ -166,7 +169,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.5;
 }
 
-/* FORMS DE LOGIN/CADASTRO */
+/* Forms de Auth */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -202,7 +205,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   gap: 10px;
 }
 
-/* BOTÕES DE LOGIN */
+/* Botões Login */
 .btn-login {
   padding: 14px;
   border: none;
@@ -266,7 +269,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =========================================
-   APP PRINCIPAL
+   APP PRINCIPAL (CONTAINER)
    ========================================= */
 .container {
   max-width: 900px;
@@ -320,6 +323,68 @@ h1 {
   color: #fff;
 }
 
+/* =========================================
+   DASHBOARD DE ESTATÍSTICAS
+   ========================================= */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.stat-card {
+  background: rgba(20, 20, 25, 0.9);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-accent);
+}
+
+.stat-card.highlight-card {
+  background: linear-gradient(135deg, rgba(161, 71, 255, 0.1), rgba(0, 0, 0, 0.8));
+  border-color: var(--heimdall-eye-purple);
+}
+
+.stat-icon {
+  font-size: 1.8rem;
+}
+
+.stat-info h3 {
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  margin: 0;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.stat-info p {
+  color: #888;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   CARDS E INPUTS
+   ========================================= */
 .card {
   background: var(--glass-panel);
   padding: 25px;
@@ -340,7 +405,6 @@ h1 {
   gap: 20px;
 }
 
-/* GRID DO CABEÇALHO (3 COLUNAS) */
 .grid-times {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -480,7 +544,7 @@ textarea:focus {
   color: #ff4444;
 }
 
-/* --- ANEXO DE IMAGEM (CLIPE) --- */
+/* ANEXO (CLIPE) */
 .attach-group {
   display: flex;
   align-items: center;
@@ -552,7 +616,7 @@ textarea:focus {
   opacity: 1;
 }
 
-/* --- SETORES (BOTÕES) --- */
+/* SETORES */
 .row-bottom-sectors {
   margin-top: 15px;
   padding-top: 10px;
@@ -606,7 +670,7 @@ textarea:focus {
 }
 
 /* =========================================
-   RODAPÉ E MODAIS
+   BARRA INFERIOR DE AÇÕES
    ========================================= */
 .bottom-bar {
   position: fixed;
@@ -618,21 +682,23 @@ textarea:focus {
   padding: 20px;
   display: flex;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  gap: 15px;
   z-index: 100;
   box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.9);
 }
 
 .btn {
-  padding: 12px 35px;
+  padding: 12px 25px;
   border: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.3s;
   letter-spacing: 1px;
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .btn-add {
@@ -657,15 +723,37 @@ textarea:focus {
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
 }
 
+/* Ajuste Mobile para barra inferior */
+@media (max-width: 600px) {
+  .bottom-bar {
+    padding: 15px 10px;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 12px 15px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Botões do Topo (Presets/Histórico) */
+.action-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
 .btn-outline {
+  flex: 1;
   background: transparent;
   border: 1px solid var(--gold-accent);
   color: var(--gold-accent);
   padding: 12px;
-  width: 100%;
   font-family: 'Cinzel', serif;
   font-weight: bold;
   font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .btn-outline:hover {
@@ -683,7 +771,9 @@ textarea:focus {
   cursor: pointer;
 }
 
-/* MODAL */
+/* =========================================
+   MODAIS
+   ========================================= */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -706,6 +796,13 @@ textarea:focus {
   box-shadow: 0 0 60px rgba(0, 0, 0, 1), inset 0 0 20px rgba(161, 71, 255, 0.1);
 }
 
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .modal-header h3 {
   color: var(--gold-accent);
   margin: 0;
@@ -726,7 +823,6 @@ textarea:focus {
 
 .presets-list {
   list-style: none;
-  margin: 25px 0;
   border: 1px solid #333;
   max-height: 300px;
   overflow-y: auto;
@@ -773,6 +869,7 @@ textarea:focus {
   font-size: 1.2rem;
   cursor: pointer;
   color: #444;
+  margin-left: 5px;
 }
 
 .btn-delete:hover {
@@ -793,7 +890,7 @@ textarea:focus {
   font-family: 'Cinzel', serif;
 }
 
-/* ANIMATIONS */
+/* Animações */
 @keyframes floatEye {
 
   0%,
