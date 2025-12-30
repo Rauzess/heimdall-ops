@@ -1,43 +1,76 @@
-/* =========================================
-   RESET & VARIÁVEIS GLOBAIS
-   ========================================= */
+/* --- RESET --- */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* =========================================
+   VARIÁVEIS E TEMAS
+   ========================================= */
 :root {
+  /* --- TEMA PADRÃO: MIDGARD (Roxo/Dourado) --- */
   --bg-dark: #050505;
   --glass-panel: rgba(18, 18, 20, 0.85);
-  --gold-accent: #c5a059;
-  --heimdall-eye-purple: #a147ff;
-  --heimdall-eye-glow: rgba(161, 71, 255, 0.6);
-  --bifrost-gradient: linear-gradient(135deg, #a147ff, #00c3ff);
+
+  --accent-primary: #c5a059;
+  /* Dourado */
+  --accent-secondary: #a147ff;
+  /* Roxo */
+  --accent-glow: rgba(161, 71, 255, 0.6);
+  --gradient-action: linear-gradient(135deg, #a147ff, #00c3ff);
+
   --text-main: #e0e0e0;
   --text-muted: #a0a0a0;
-  --border-subtle: 1px solid rgba(197, 160, 89, 0.3);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.15);
+
+  --bg-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2694&auto=format&fit=crop');
+}
+
+/* --- TEMA MUSPELHEIM (Fogo) 🔥 --- */
+body.theme-muspelheim {
+  --accent-primary: #ffaa00;
+  --accent-secondary: #ff4500;
+  --accent-glow: rgba(255, 69, 0, 0.6);
+  --gradient-action: linear-gradient(135deg, #ff4500, #ffaa00);
+  --bg-image: url('https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=2607&auto=format&fit=crop');
+}
+
+/* --- TEMA JOTUNHEIM (Gelo) ❄️ --- */
+body.theme-jotunheim {
+  --accent-primary: #00eaff;
+  --accent-secondary: #0088ff;
+  --accent-glow: rgba(0, 136, 255, 0.6);
+  --gradient-action: linear-gradient(135deg, #0088ff, #00eaff);
+  --bg-image: url('https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2600&auto=format&fit=crop');
+}
+
+/* --- TEMA ALFHEIM (Místico/Verde) 🌲 --- */
+body.theme-alfheim {
+  --accent-primary: #50fa7b;
+  --accent-secondary: #adff2f;
+  --accent-glow: rgba(80, 250, 123, 0.5);
+  --gradient-action: linear-gradient(135deg, #50fa7b, #adff2f);
+  --bg-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2664&auto=format&fit=crop');
 }
 
 /* =========================================
-   ESTRUTURA BÁSICA & FUNDO
+   ESTRUTURA GERAL
    ========================================= */
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-
-  /* Wallpaper Épico */
   background:
-    linear-gradient(rgba(10, 15, 25, 0.85), rgba(5, 10, 20, 0.95)),
-    url('https://t4.ftcdn.net/jpg/16/64/82/77/360_F_1664827776_MEKNJB76xqUqlAJkeG2QE546yJ5TIJ7O.jpg');
+    linear-gradient(rgba(5, 10, 15, 0.85), rgba(5, 10, 15, 0.90)),
+    var(--bg-image);
   background-size: cover;
-  background-position: center 30%;
+  background-position: center;
   background-attachment: fixed;
+  transition: background-image 0.5s ease-in-out;
 }
 
-/* Tipografia Estilizada */
 h1,
 h2,
 h3,
@@ -45,13 +78,14 @@ h3,
 .badge,
 label,
 .auth-title,
-.sector-label {
+.sector-label,
+#btn-logout,
+.btn-outline {
   font-family: 'Cinzel', serif;
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
-/* Ícones de Inputs (Brancos para contraste) */
 input[type="time"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
@@ -63,7 +97,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="time"]::-webkit-calendar-picker-indicator:hover,
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
-  filter: invert(1) drop-shadow(0 0 5px var(--heimdall-eye-purple));
+  filter: invert(1) drop-shadow(0 0 5px var(--accent-secondary));
 }
 
 /* =========================================
@@ -75,11 +109,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(20, 10, 30, 0.4) 0%, #000 100%),
-    url('https://t4.ftcdn.net/jpg/16/64/82/77/360_F_1664827776_MEKNJB76xqUqlAJkeG2QE546yJ5TIJ7O.jpg');
+  background: radial-gradient(circle at center, rgba(10, 10, 15, 0.5) 0%, #000 100%), var(--bg-image);
   background-size: cover;
   background-position: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -91,7 +124,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   background: rgba(5, 5, 8, 0.85);
   padding: 3rem 2.5rem;
   border-radius: 4px;
-  border: 1px solid rgba(197, 160, 89, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 0, 0, 0.8);
   text-align: center;
   max-width: 420px;
@@ -100,7 +133,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   overflow: hidden;
 }
 
-/* Linha de brilho superior */
 .login-card::before {
   content: "";
   position: absolute;
@@ -109,11 +141,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transform: translateX(-50%);
   width: 60%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
-  box-shadow: 0 0 10px var(--gold-accent);
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  box-shadow: 0 0 10px var(--accent-primary);
 }
 
-/* Olho Rúnico (Animação) */
 .rune-eye-container {
   position: relative;
   width: 80px;
@@ -127,8 +158,8 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .rune-eye {
   width: 100%;
   height: 100%;
-  color: var(--gold-accent);
-  filter: drop-shadow(0 0 5px var(--gold-accent));
+  color: var(--accent-primary);
+  filter: drop-shadow(0 0 5px var(--accent-primary));
   animation: floatEye 4s ease-in-out infinite;
   z-index: 2;
 }
@@ -140,8 +171,8 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background: var(--heimdall-eye-purple);
-  box-shadow: 0 0 40px 20px rgba(161, 71, 255, 0.4);
+  background: var(--accent-secondary);
+  box-shadow: 0 0 40px 20px var(--accent-glow);
   border-radius: 50%;
   animation: pulseGlow 3s infinite alternate;
   z-index: 1;
@@ -157,8 +188,8 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .ops-highlight {
-  color: var(--heimdall-eye-purple);
-  text-shadow: 0 0 15px var(--heimdall-eye-purple);
+  color: var(--accent-secondary);
+  text-shadow: 0 0 15px var(--accent-secondary);
 }
 
 .separator-line {
@@ -169,7 +200,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.5;
 }
 
-/* Forms de Auth */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -178,7 +208,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .auth-title {
-  color: var(--gold-accent);
+  color: var(--accent-primary);
   font-size: 0.9rem;
   letter-spacing: 2px;
   margin-bottom: 5px;
@@ -195,8 +225,8 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .auth-form input:focus {
-  border-color: var(--heimdall-eye-purple);
-  box-shadow: 0 0 10px rgba(161, 71, 255, 0.2);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 10px var(--accent-glow);
   outline: none;
 }
 
@@ -205,7 +235,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   gap: 10px;
 }
 
-/* Botões Login */
 .btn-login {
   padding: 14px;
   border: none;
@@ -219,24 +248,25 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .btn-login.primary {
-  background: var(--heimdall-eye-purple);
+  background: var(--accent-secondary);
   color: #fff;
-  box-shadow: 0 0 15px var(--heimdall-eye-glow);
+  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .btn-login.primary:hover {
-  background: #b066ff;
-  box-shadow: 0 0 25px var(--heimdall-eye-purple);
+  background: var(--accent-secondary);
+  filter: brightness(1.2);
+  box-shadow: 0 0 25px var(--accent-secondary);
 }
 
 .btn-login.secondary {
   background: transparent;
-  border: 1px solid var(--gold-accent);
-  color: var(--gold-accent);
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .btn-login.secondary:hover {
-  background: rgba(197, 160, 89, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
   border-color: #fff;
 }
@@ -248,7 +278,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .toggle-text span {
-  color: var(--gold-accent);
+  color: var(--accent-primary);
   cursor: pointer;
   text-decoration: underline;
   font-weight: bold;
@@ -269,13 +299,14 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* =========================================
-   APP PRINCIPAL (CONTAINER)
+   APP PRINCIPAL
    ========================================= */
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
   padding-bottom: 120px;
+  position: relative;
 }
 
 header {
@@ -290,20 +321,21 @@ h1 {
 }
 
 .highlight {
-  color: var(--gold-accent);
+  color: var(--accent-primary);
 }
 
 .badge {
-  background: rgba(161, 71, 255, 0.15);
-  color: #e0aaff;
-  border: 1px solid var(--heimdall-eye-purple);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--accent-secondary);
+  border: 1px solid var(--accent-secondary);
   padding: 6px 18px;
   font-size: 0.85rem;
   font-weight: bold;
-  box-shadow: 0 0 15px var(--heimdall-eye-glow);
+  box-shadow: 0 0 15px var(--accent-glow);
   animation: eyePulse 3s infinite alternate ease-in-out;
 }
 
+/* BOTÃO SAIR (ABSOLUTO NO TOPO) */
 #btn-logout {
   position: absolute;
   top: 20px;
@@ -316,6 +348,9 @@ h1 {
   cursor: pointer;
   letter-spacing: 1px;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #btn-logout:hover {
@@ -323,9 +358,7 @@ h1 {
   color: #fff;
 }
 
-/* =========================================
-   DASHBOARD DE ESTATÍSTICAS
-   ========================================= */
+/* DASHBOARD */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -348,12 +381,12 @@ h1 {
 
 .stat-card:hover {
   transform: translateY(-2px);
-  border-color: var(--gold-accent);
+  border-color: var(--accent-primary);
 }
 
 .stat-card.highlight-card {
-  background: linear-gradient(135deg, rgba(161, 71, 255, 0.1), rgba(0, 0, 0, 0.8));
-  border-color: var(--heimdall-eye-purple);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
+  border-color: var(--accent-secondary);
 }
 
 .stat-icon {
@@ -376,20 +409,12 @@ h1 {
   margin: 0;
 }
 
-@media (max-width: 600px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =========================================
-   CARDS E INPUTS
-   ========================================= */
+/* CONFIG CARD E AÇÕES */
 .card {
   background: var(--glass-panel);
   padding: 25px;
   border: var(--border-subtle);
-  border-image: var(--bifrost-gradient) 1;
+  border-image: var(--gradient-action) 1;
   border-left-width: 3px;
   border-right: none;
   border-top: none;
@@ -411,14 +436,8 @@ h1 {
   gap: 20px;
 }
 
-@media (max-width: 600px) {
-  .grid-times {
-    grid-template-columns: 1fr;
-  }
-}
-
 label {
-  color: var(--gold-accent);
+  color: var(--accent-primary);
   font-size: 0.85rem;
   margin-bottom: 8px;
   display: block;
@@ -440,15 +459,16 @@ textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--heimdall-eye-purple);
-  box-shadow: 0 0 20px var(--heimdall-eye-glow);
-  background-color: rgba(161, 71, 255, 0.05);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 20px var(--accent-glow);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Input Responsável com borda visível */
 #responsavel {
-  background-color: rgba(212, 175, 55, 0.05) !important;
-  color: var(--gold-accent) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  color: var(--accent-primary) !important;
+  border: 1px solid #444;
   text-align: center;
   font-weight: bold;
   font-family: 'Cinzel', serif;
@@ -456,13 +476,58 @@ textarea:focus {
   cursor: not-allowed;
 }
 
-/* =========================================
-   LINHAS DE ATIVIDADE
-   ========================================= */
+/* BOTÕES DE AÇÃO (LINHA) */
+.action-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+  padding: 12px;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+  color: #fff;
+}
+
+/* ESTILO DO SELECT DE TEMAS (Pra parecer botão) */
+select.theme-selector-inline {
+  background: transparent;
+  outline: none;
+  appearance: none;
+  background-image: none;
+  /* Remove seta padrão em alguns browsers */
+  cursor: pointer;
+}
+
+select.theme-selector-inline option {
+  background: #111;
+  color: #fff;
+  padding: 10px;
+}
+
+/* LINHAS DE ATIVIDADE */
 .atividade-row {
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
   padding: 20px;
-  border-left: 2px solid var(--heimdall-eye-purple);
+  border-left: 2px solid var(--accent-secondary);
   margin-bottom: 15px;
   border-bottom: 1px solid #222;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -471,8 +536,8 @@ textarea:focus {
 }
 
 .atividade-row:hover {
-  border-left-color: #00c3ff;
-  box-shadow: inset 0 0 20px rgba(161, 71, 255, 0.1);
+  border-left-color: var(--accent-primary);
+  box-shadow: inset 0 0 20px var(--accent-glow);
 }
 
 .row-top {
@@ -511,7 +576,7 @@ textarea:focus {
 }
 
 .input-desc:focus {
-  border-bottom: 1px solid var(--heimdall-eye-purple);
+  border-bottom: 1px solid var(--accent-secondary);
   box-shadow: none;
 }
 
@@ -544,7 +609,6 @@ textarea:focus {
   color: #ff4444;
 }
 
-/* ANEXO (CLIPE) */
 .attach-group {
   display: flex;
   align-items: center;
@@ -567,17 +631,17 @@ textarea:focus {
 }
 
 .btn-attach:hover {
-  border-color: var(--heimdall-eye-purple);
-  color: var(--heimdall-eye-purple);
-  background: rgba(161, 71, 255, 0.1);
-  box-shadow: 0 0 10px var(--heimdall-eye-glow);
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .img-preview-container {
   width: 40px;
   height: 40px;
   border-radius: 4px;
-  border: 1px solid var(--heimdall-eye-purple);
+  border: 1px solid var(--accent-secondary);
   overflow: hidden;
   position: relative;
   display: none;
@@ -616,7 +680,6 @@ textarea:focus {
   opacity: 1;
 }
 
-/* SETORES */
 .row-bottom-sectors {
   margin-top: 15px;
   padding-top: 10px;
@@ -629,7 +692,7 @@ textarea:focus {
 
 .sector-label {
   font-size: 0.75rem;
-  color: var(--gold-accent);
+  color: var(--accent-primary);
   font-weight: bold;
   margin-right: 5px;
   letter-spacing: 1px;
@@ -656,29 +719,26 @@ textarea:focus {
 }
 
 .btn-mini-sector:hover {
-  border-color: var(--gold-accent);
+  border-color: var(--accent-primary);
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-mini-sector.active {
-  background: var(--heimdall-eye-purple);
+  background: var(--accent-secondary);
   color: #fff;
-  border-color: var(--heimdall-eye-purple);
-  box-shadow: 0 0 15px var(--heimdall-eye-glow);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 15px var(--accent-glow);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* =========================================
-   BARRA INFERIOR DE AÇÕES
-   ========================================= */
 .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background: rgba(5, 5, 5, 0.95);
-  border-top: 1px solid var(--gold-accent);
+  border-top: 1px solid var(--accent-primary);
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -702,20 +762,20 @@ textarea:focus {
 }
 
 .btn-add {
-  background: var(--bifrost-gradient);
+  background: var(--gradient-action);
   color: #fff;
-  box-shadow: 0 0 20px var(--heimdall-eye-glow);
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .btn-add:hover {
-  box-shadow: 0 0 40px var(--heimdall-eye-purple);
+  box-shadow: 0 0 40px var(--accent-secondary);
   filter: brightness(1.1);
 }
 
 .btn-pdf {
-  background: var(--gold-accent);
+  background: var(--accent-primary);
   color: #111;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .btn-pdf:hover {
@@ -723,47 +783,8 @@ textarea:focus {
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
 }
 
-/* Ajuste Mobile para barra inferior */
-@media (max-width: 600px) {
-  .bottom-bar {
-    padding: 15px 10px;
-    gap: 10px;
-  }
-
-  .btn {
-    padding: 12px 15px;
-    font-size: 0.8rem;
-  }
-}
-
-/* Botões do Topo (Presets/Histórico) */
-.action-row {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.btn-outline {
-  flex: 1;
-  background: transparent;
-  border: 1px solid var(--gold-accent);
-  color: var(--gold-accent);
-  padding: 12px;
-  font-family: 'Cinzel', serif;
-  font-weight: bold;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn-outline:hover {
-  background: rgba(212, 175, 55, 0.1);
-  border-color: #fff;
-  color: #fff;
-}
-
 .btn-primary-small {
-  background: var(--gold-accent);
+  background: var(--accent-primary);
   color: #000;
   padding: 8px 16px;
   border: none;
@@ -771,9 +792,6 @@ textarea:focus {
   cursor: pointer;
 }
 
-/* =========================================
-   MODAIS
-   ========================================= */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -792,8 +810,8 @@ textarea:focus {
   width: 90%;
   max-width: 450px;
   padding: 30px;
-  border: 1px solid var(--heimdall-eye-purple);
-  box-shadow: 0 0 60px rgba(0, 0, 0, 1), inset 0 0 20px rgba(161, 71, 255, 0.1);
+  border: 1px solid var(--accent-secondary);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 1), inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .modal-header {
@@ -804,7 +822,7 @@ textarea:focus {
 }
 
 .modal-header h3 {
-  color: var(--gold-accent);
+  color: var(--accent-primary);
   margin: 0;
   font-size: 1.4rem;
 }
@@ -844,7 +862,7 @@ textarea:focus {
 }
 
 .preset-item:hover {
-  background: rgba(161, 71, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .btn-load {
@@ -859,8 +877,8 @@ textarea:focus {
 }
 
 .btn-load:hover {
-  border-color: var(--heimdall-eye-purple);
-  color: var(--heimdall-eye-purple);
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
 }
 
 .btn-delete {
@@ -890,7 +908,6 @@ textarea:focus {
   font-family: 'Cinzel', serif;
 }
 
-/* Animações */
 @keyframes floatEye {
 
   0%,
@@ -917,12 +934,12 @@ textarea:focus {
 
 @keyframes eyePulse {
   0% {
-    box-shadow: 0 0 10px var(--heimdall-eye-glow);
+    box-shadow: 0 0 10px var(--accent-glow);
     filter: brightness(1);
   }
 
   100% {
-    box-shadow: 0 0 25px var(--heimdall-eye-purple);
+    box-shadow: 0 0 25px var(--accent-secondary);
     filter: brightness(1.3);
   }
 }
@@ -959,4 +976,34 @@ textarea:focus {
   to {
     transform: scale(1);
   }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-times {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-bar {
+    padding: 15px 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 12px 15px;
+    font-size: 0.8rem;
+    flex: 1;
+    white-space: nowrap;
+  }
+
+  .action-row {
+    flex-direction: column;
+  }
+
+  /* Botões um embaixo do outro no mobile */
 }
