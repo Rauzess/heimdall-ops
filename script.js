@@ -37,7 +37,7 @@ const db = getFirestore(app);
 let currentUser = null;
 const FAKE_DOMAIN = "@heimdall.ops";
 
-// DOM
+// DOM Elements
 const loginScreen = document.getElementById("login-screen");
 const appContent = document.getElementById("app-content");
 const btnLogout = document.getElementById("btn-logout");
@@ -83,6 +83,10 @@ const statRondas = document.getElementById("stat-rondas");
 const statAtividades = document.getElementById("stat-atividades");
 const statHoras = document.getElementById("stat-horas");
 
+// Theme Selector
+const themeSelector = document.getElementById("theme-selector");
+const bodyElement = document.body;
+
 const SETORES = [
   "Geral",
   "Reversa",
@@ -93,7 +97,28 @@ const SETORES = [
   "Esteiras",
 ];
 
-// 1. AUTH
+// ==========================================
+// 1. TEMAS
+// ==========================================
+const savedTheme = localStorage.getItem("heimdall-theme") || "default";
+if (savedTheme !== "default") bodyElement.classList.add(savedTheme);
+if (themeSelector) {
+  themeSelector.value = savedTheme;
+  themeSelector.addEventListener("change", (e) => {
+    const selectedTheme = e.target.value;
+    bodyElement.classList.remove(
+      "theme-muspelheim",
+      "theme-jotunheim",
+      "theme-alfheim",
+    );
+    if (selectedTheme !== "default") bodyElement.classList.add(selectedTheme);
+    localStorage.setItem("heimdall-theme", selectedTheme);
+  });
+}
+
+// ==========================================
+// 2. AUTH
+// ==========================================
 linkCriar.addEventListener("click", () => {
   formLogin.classList.add("hidden");
   formRegister.classList.remove("hidden");
@@ -110,7 +135,7 @@ btnEntrar.addEventListener("click", () => {
   const password = loginPass.value.trim();
   if (!username || !password)
     return showMsg("Preencha usuário e senha.", "red");
-  showMsg("Verificando...", "#c5a059");
+  showMsg("Verificando...", "var(--accent-primary)");
   signInWithEmailAndPassword(auth, username + FAKE_DOMAIN, password).catch(
     (err) => showMsg("Erro: " + err.code, "red"),
   );
@@ -124,7 +149,7 @@ btnCadastrar.addEventListener("click", () => {
   if (!nome || !sobrenome || !username || !password)
     return showMsg("Preencha tudo.", "red");
   if (password.length < 6) return showMsg("Senha curta (min 6).", "red");
-  showMsg("Registrando...", "#c5a059");
+  showMsg("Registrando...", "var(--accent-primary)");
   createUserWithEmailAndPassword(auth, username + FAKE_DOMAIN, password)
     .then((res) =>
       updateProfile(res.user, { displayName: `${nome} ${sobrenome}` }).then(
@@ -167,7 +192,9 @@ function mostrarTelaLogin() {
   formRegister.classList.add("hidden");
 }
 
-// 2. DASHBOARD / ESTATÍSTICAS (Mensal)
+// ==========================================
+// 3. DASHBOARD / ESTATÍSTICAS (MÊS ATUAL)
+// ==========================================
 async function calcularEstatisticas() {
   if (!currentUser) return;
   try {
@@ -181,25 +208,23 @@ async function calcularEstatisticas() {
     let totalAtividades = 0;
     let totalMinutos = 0;
 
-    // Pega mês atual (0-11)
+    // Mês atual do sistema
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
     snapshot.forEach((doc) => {
       const data = doc.data();
-
-      // Verifica se a data do relatório (YYYY-MM-DD) é do mês atual
+      // Pega data do relatório (YYYY-MM-DD)
       const [y, m, d] = data.dataRaw.split("-").map(Number);
 
+      // Filtra se é deste mês
       if (y === currentYear && m - 1 === currentMonth) {
         totalRondas++;
-
         if (data.dados && Array.isArray(data.dados)) {
           totalAtividades += data.dados.length;
           data.dados.forEach((ativ) => {
             if (ativ.inicio && ativ.fim) {
-              const minutos = diffMinutes(ativ.inicio, ativ.fim);
-              totalMinutos += minutos;
+              totalMinutos += diffMinutes(ativ.inicio, ativ.fim);
             }
           });
         }
@@ -227,7 +252,9 @@ function diffMinutes(start, end) {
   return diff;
 }
 
-// 3. ATIVIDADES
+// ==========================================
+// 4. ATIVIDADES
+// ==========================================
 window.addEventListener("DOMContentLoaded", () => {
   if (dataInput) dataInput.valueAsDate = new Date();
   adicionarLinha();
@@ -347,7 +374,9 @@ function atualizarListaInterna() {
 }
 if (btnAdd) btnAdd.addEventListener("click", () => adicionarLinha());
 
-// 4. PRESETS E HISTÓRICO
+// ==========================================
+// 5. PRESETS, HISTÓRICO & SALVAR RETRO
+// ==========================================
 btnOpenPresets.addEventListener("click", async () => {
   modalPresets.classList.remove("hidden");
   msgEmptyPresets.innerText = "Carregando...";
@@ -415,7 +444,7 @@ btnSavePreset.addEventListener("click", async () => {
   btnSavePreset.textContent = "Salvar";
 });
 
-// HISTÓRICO COM EXCLUSÃO
+// Histórico
 btnOpenHistory.addEventListener("click", async () => {
   modalHistory.classList.remove("hidden");
   msgEmptyHistory.innerText = "Buscando...";
@@ -430,6 +459,7 @@ async function carregarHistorico() {
   try {
     const q = query(
       collection(db, "historico_rondas"),
+      where("uid", "==", currentUser.uid),
       orderBy("timestamp", "desc"),
       limit(20),
     );
@@ -439,12 +469,12 @@ async function carregarHistorico() {
       msgEmptyHistory.style.display = "none";
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
-        const id = docSnap.id; // ID para deletar
+        const id = docSnap.id;
         const li = document.createElement("li");
         li.className = "preset-item";
-        li.innerHTML = `<span>${data.dataFormatada} - ${data.turno} <br><small style="color:#888">${data.responsavel}</small></span>
+        li.innerHTML = `<span>${data.dataFormatada} - ${data.turno}</span>
           <div class="preset-actions">
-            <button class="btn-load">Baixar PDF</button>
+            <button class="btn-load">Baixar</button>
             <button class="btn-delete" style="color:#ff4444">🗑️</button>
           </div>`;
         li.querySelector(".btn-load").addEventListener("click", () =>
@@ -456,12 +486,11 @@ async function carregarHistorico() {
             true,
           ),
         );
-        // Deletar do Histórico
         li.querySelector(".btn-delete").addEventListener("click", async () => {
-          if (confirm("Apagar este registro? (Isso afetará as horas totais)")) {
+          if (confirm("Apagar registro?")) {
             await deleteDoc(doc(db, "historico_rondas", id));
             carregarHistorico();
-            calcularEstatisticas(); // Recalcula
+            calcularEstatisticas();
           }
         });
         historyListUl.appendChild(li);
@@ -476,20 +505,19 @@ async function carregarHistorico() {
   }
 }
 
-// Salvar Retroativo (Sem PDF)
+// Salvar Retroativo
 btnSaveRetro.addEventListener("click", () => {
   const dados = atualizarListaInterna();
   const resp = responsavelInput.value || "N/A";
   const turno = turnoInput.value || "N/A";
   const dataRaw = dataInput.value || new Date().toISOString().split("T")[0];
-  const dataParts = dataRaw.split("-");
-  const dataDisplay = dataParts.reverse().join("/");
+  const dataDisplay = dataRaw.split("-").reverse().join("/");
 
   if (dados.length === 0) return alert("Preencha as atividades.");
-  if (confirm(`Salvar ronda de ${dataDisplay} no histórico sem gerar PDF?`)) {
+  if (confirm(`Salvar ${dataDisplay} no histórico sem PDF?`)) {
     salvarNoHistorico(dados, resp, turno, dataRaw, dataDisplay);
-    alert("Salvo no histórico!");
-    listaAtividadesDiv.innerHTML = ""; // Limpa tela
+    alert("Salvo!");
+    listaAtividadesDiv.innerHTML = "";
     adicionarLinha();
   }
 });
@@ -518,7 +546,9 @@ async function salvarNoHistorico(
   }
 }
 
-// 5. PDF
+// ==========================================
+// 6. GERAR PDF
+// ==========================================
 function gerarPDF(dados, responsavel, turno, dataRaw, isHistory = false) {
   if (dados.length === 0) return alert("Relatório vazio.");
   const dataParts = dataRaw.split("-");
